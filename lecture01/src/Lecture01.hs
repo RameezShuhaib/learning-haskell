@@ -17,7 +17,11 @@ module Lecture01 where
 -- λ> problem1 ['x','y','z']
 -- 'z'
 problem1 :: [a] -> a
-problem1 = undefined
+problem1 (x:xs)
+  | xs == []  = x
+  | otherwise = problem1 xs
+
+-- problem2 l = l !! ((length l) - 1)
 
 
 -- Problem 2
@@ -27,7 +31,11 @@ problem1 = undefined
 -- λ> problem2 ['a'..'z']
 -- 'y'
 problem2 :: [a] -> a
-problem2 = undefined
+problem2 a@[_, _] = head a
+problem2 (x:x':xs)
+  | xs == []  = x
+  | otherwise = problem1 xs
+-- problem2 l = l !! ((length l) - 2)
 
 
 -- Problem 3
@@ -38,7 +46,7 @@ problem2 = undefined
 -- λ> problem3 "haskell" 5
 -- 'e'
 problem3 :: [a] -> Int -> a
-problem3 = undefined
+problem3 l v = l !! (v + 1)
 
 
 -- Problem 4
@@ -49,7 +57,9 @@ problem3 = undefined
 -- λ> problem4 "Hello, world!"
 -- 13
 problem4 :: [a] -> Int
-problem4 = undefined
+problem4 [] = 0
+problem4 [_] = 1
+problem4 (x:xs) = 1 + (problem4 xs)
 
 
 -- Problem 5
@@ -60,7 +70,8 @@ problem4 = undefined
 -- λ> problem5 [1,2,3,4]
 -- [4,3,2,1]
 problem5 :: [a] -> [a]
-problem5 = undefined
+problem5 v@[_] = v
+problem5 (x:xs) = problem5 xs ++ [x]
 
 
 -- Problem 6
@@ -74,7 +85,9 @@ problem5 = undefined
 -- λ> problem6 [1,2,4,8,16,8,4,2,1]
 -- True
 problem6 :: Eq a => [a] -> Bool
-problem6 = undefined
+problem6 [] = True
+problem6 [_] = True
+problem6 (a:l) = (a == last l) && problem6 (init l)
 
 
 -- Problem 7
@@ -95,7 +108,11 @@ data NestedList a
 -- []
 
 problem7 :: NestedList a -> [a]
-problem7 = undefined
+problem7 x = 
+  case x of
+  Elem a -> [a]
+  List [] -> []
+  List (xs:xss) -> problem7 xs ++ problem7 (List xss)
 
 
 -- Problem 8
@@ -106,7 +123,7 @@ problem7 = undefined
 -- λ> problem8 "aaaabccaadeeee"
 -- "abcade"
 problem8 :: Eq a => [a] -> [a]
-problem8 = undefined
+problem8 xs = [e | (e, e') <- zip xs (tail xs), e /= e'] ++ [last xs]
 
 
 -- Problem 9
@@ -116,7 +133,11 @@ problem8 = undefined
 -- λ> problem9 ['a', 'a', 'a', 'a', 'b', 'c', 'c', 'a', 'a', 'd', 'e', 'e', 'e', 'e']
 -- ["aaaa","b","cc","aa","d","eeee"]
 problem9 :: Eq a => [a] -> [[a]]
-problem9 = undefined
+problem9 (x:xs) = foldl aux [[x]] xs
+  where 
+    aux acc e
+      | e == (last (last acc)) = (init acc) ++ [e : (last acc)]
+      | otherwise              = (acc ++ [[e]])
 
 
 -- Problem 10
@@ -128,7 +149,8 @@ problem9 = undefined
 -- λ> problem10 "aaaabccaadeeee"
 -- [(4,'a'),(1,'b'),(2,'c'),(2,'a'),(1,'d'),(4,'e')]
 problem10 :: Eq a => [a] -> [(Int, a)]
-problem10 = undefined
+problem10 [] = []
+problem10 (x:xs) = undefined
 
 
 -- Problem 11
@@ -189,7 +211,7 @@ problem13 = undefined
 -- λ> problem14 [1, 2, 3]
 -- [1,1,2,2,3,3]
 problem14 :: [a] -> [a]
-problem14 = undefined
+problem14 xs = foldr (++) () map (\x -> [x, x]) xs
 
 
 -- Problem 15
@@ -199,7 +221,7 @@ problem14 = undefined
 -- λ> problem15 "abc" 3
 -- "aaabbbccc"
 problem15 :: [a] -> Int -> [a]
-problem15 = undefined
+problem15 xs k = foldr (++) [] (map (\x -> replicate k x) xs)
 
 
 -- Problem 16
@@ -209,7 +231,7 @@ problem15 = undefined
 -- λ> problem16 "abcdefghik" 3
 -- "abdeghk"
 problem16 :: [a] -> Int -> [a]
-problem16 = undefined
+problem16 l v = [e |(idx, e) <- zip [1..(length l+1)] l, (idx `mod` v) /= 0 ]
 
 
 -- Problem 17
@@ -220,7 +242,7 @@ problem16 = undefined
 -- λ> problem17 "abcdefghik" 3
 -- ("abc", "defghik")
 problem17 :: [a] -> Int -> ([a], [a])
-problem17 = undefined
+problem17 xs k = (take k xs, drop k xs)
 
 
 -- Problem 18
@@ -233,7 +255,7 @@ problem17 = undefined
 -- λ> problem18 ['a','b','c','d','e','f','g','h','i','k'] 3 7
 -- "cdefg"
 problem18 :: [a] -> Int -> Int -> [a]
-problem18 = undefined
+problem18 l a b = drop a (take b l)
 
 
 -- Problem 19
@@ -247,7 +269,10 @@ problem18 = undefined
 -- λ> problem19 ['a','b','c','d','e','f','g','h'] (-2)
 -- "ghabcdef"
 problem19 :: [a] -> Int -> [a]
-problem19 = undefined
+problem19 = l idx
+  | idx < 0     = (drop reverse_idx l) ++ (take reverse_idx l)
+  | otherwise = (drop idx l) ++ (take idx l)
+  where reverse_idx = length l - idx
 
 
 -- Problem 20
@@ -257,7 +282,7 @@ problem19 = undefined
 -- λ> problem20 2 "abcd"
 -- ('b',"acd")
 problem20 :: Int -> [a] -> (a, [a])
-problem20 = undefined
+problem220 k l = ((l !! k), (init (take (k+1) l)) ++ drop (k+1) l)
 
 
 -- Problem A
@@ -267,7 +292,8 @@ problem20 = undefined
 -- λ> problemA [1,3,4] [2,5,6]
 -- [1,2,3,4,5,6]
 problemA :: Ord a => [a] -> [a] -> [a]
-problemA = undefined
+problemA [] [] = []
+problemA (x:xs) (x':xs') = x : x' : (problemA xs xs')
 
 
 -- Problem B
@@ -278,4 +304,10 @@ problemA = undefined
 -- λ> problemB [4,3,2,1]
 -- [1,2,3,4]
 problemB :: Ord a => [a] -> [a]
-problemB = undefined
+problemB xs 
+  | len <= 1  = xs
+  | otherwise = sortTwo (problemB (take middle xs)) (problemB (drop middle xs))
+  where
+    len = length xs
+    middle = fst (len `divMod` 2)
+    sortTwo (xx:xxs) (xx':xxs') = xx : xx' : (sortTwo xxs xxs')
